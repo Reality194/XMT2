@@ -162,16 +162,17 @@ def main():
 
     compiled = core.compile_model(model=model, device_name=device)
 
-    # 执行一次推理并计时（统一使用 infer_request，避免不同版本返回类型差异）
+    # 执行 1000 次推理并计时（统一使用 infer_request，避免不同版本返回类型差异）
     start = time.time()
     req = compiled.create_infer_request()
     in_name = compiled.input(0).get_any_name()
-    req.infer({in_name: input_data})
+    for _ in range(10000):
+        req.infer({in_name: input_data})
     out0 = req.get_output_tensor(0).data
     end = time.time()
 
-    duration_ms = (end - start) * 1000.0
-    print(f"一次推理耗时：{duration_ms:.2f} ms")
+    duration_ms = (end - start)
+    print(f"10000 次推理耗时：{duration_ms:.2f} s")
 
     # 将输出扁平化并取 top-5
     flat = np.array(out0).ravel()
