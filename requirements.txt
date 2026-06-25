@@ -1,0 +1,5 @@
+openvino
+numpy
+requests
+opencv-python
+certifi
